@@ -18,8 +18,8 @@ function generate (count) {
 
 function listuxto(params) {
 
-    params = params || null;
-    client.listUnspent(params).then((help) => console.log(help));
+    params = params || undefined;
+    return client.listUnspent(params);
 }
 
 function faucet (address, value) {
@@ -35,6 +35,11 @@ function random_addr () {
     return client.getNewAddress().then((help) => console.log(help))
 }
 
+function broadcast (signed_raw_tx) {
+    client.sendRawTransaction(signed_raw_tx).then((help)=>console.log(help))
+}
+
+
 
 module.exports = {
     generate,
@@ -42,7 +47,5 @@ module.exports = {
     faucet,
     getPubKey,
     random_addr,
-    RANDOM_ADDR: random_addr()
 }
-
 
