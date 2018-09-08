@@ -17,5 +17,8 @@
     "bitcoin-core": "^2.0.0",
     "bitcoinjs-lib": "^4.0.1",
     "qtumjs": "^1.9.1"
+  },
+  "devDependencies": {
+    "bip65": "^1.0.3"
   }
 }

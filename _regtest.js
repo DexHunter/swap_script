@@ -16,13 +16,33 @@ function generate (count) {
     client.generate(count).then((help) => console.log(help));
 }
 
-function listuxto() {
-    client.listUnspent().then((help) => console.log(help));
+function listuxto(params) {
 
+    params = params || null;
+    client.listUnspent(params).then((help) => console.log(help));
+}
+
+function faucet (address, value) {
+    client.sendToAddress(address, value).then((help) => console.log(help))
+}
+
+function getPubKey (address) {
+    const info = client.validateAddress(address).then((help) => console.log(help));
+    return info['pubkey'];
+}
+
+function random_addr () {
+    return client.getNewAddress().then((help) => console.log(help))
 }
 
 
 module.exports = {
     generate,
-    listuxto
+    listuxto,
+    faucet,
+    getPubKey,
+    random_addr,
+    RANDOM_ADDR: random_addr()
 }
+
+
