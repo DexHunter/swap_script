@@ -1,13 +1,14 @@
 {
   "name": "swap_script",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hashed Time-Locked Contract",
+  "main": "htlc.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node htlc.js"
   },
   "keywords": [
-    "swap"
+    "swap",
+    "htlc"
   ],
   "author": "Dixing (Dex)",
   "license": "MIT",

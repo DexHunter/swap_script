@@ -96,8 +96,8 @@ const client = new Client({
 
 });
 
-var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(BTCscriptPubKey)
-var redeemScriptHash = bitcoin.crypto.hash160(redeemScript)
+//var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(BTCscriptPubKey)
+//var redeemScriptHash = bitcoin.crypto.hash160(redeemScript)
 
-var scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash)
-var P2SHaddress = bitcoin.address.fromOutputScript(scriptPubKey, bitcoin.networks.testnet)
+//var scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash)
+//var P2SHaddress = bitcoin.address.fromOutputScript(scriptPubKey, bitcoin.networks.testnet)
