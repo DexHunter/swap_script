@@ -26,6 +26,9 @@ const peggy = bitcoin.ECPair.fromWIF('cP2DhdJW3eRu9RGEnRFQXf8GcjbgGTvynbLUEg1Ae3
 const victor_addr = '2MwrYWMvWGuxYDL2HJJWcSWaEVAhgSX1vde' //in case
 const peggy_addr = '2MzQ4mshvqHtdwJ2NRXMakm4rgsxJMQajpp' //in case
 
+const qtum_a_addr = 'qdMzYMhK4DwqmcaHVQUDeLpFgPHHAcuVgy'
+const qtum_b_addr = 'qMvyUVhNep4yZfJX19FAZabm5iBvB2BMAm'
+
 const fromHexString = hexString =>
   new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)))
 
@@ -47,7 +50,6 @@ function main() {
             ops.OP_RIPEMD160,
             Buffer.from(secretHash, 'hex'),
             ops.OP_EQUALVERIFY,
-
             Buffer.from(bQ.publicKey, 'hex'),
             ops.OP_EQUAL,
             ops.OP_IF,
@@ -97,7 +99,7 @@ function main() {
         txb.addInput(unspent[0].txid, unspent[0].vout)
 
         const newaddr = await client.getNewAddress()
-        txb.addOutput(newaddr, 40000)
+        txb.addOutput(newaddr, 5600)
 
 		const tx = txb.buildIncomplete()
 		const signatureHash = tx.hashForSignature(0, redeemScript, hashType)
@@ -183,11 +185,13 @@ async function rpc_test(addrs) {
 
 }
 
-rpc_test(['2N7zWpgzJXb5M7KjeybmhyUJWFk8HqEF1en']).catch((err)=>{console.log(err)})
+// rpc_test(['2N7zWpgzJXb5M7KjeybmhyUJWFk8HqEF1en']).catch((err)=>{console.log(err)})
 
-async function rpc_test2() {
-    const acc = await client.getNewAddress()
-    console.log(acc)
+async function rpc_test_qtum() {
+    const bal = await qtumrpc.rawCall('getbalance')
+    console.log(bal)
+    const tx = await qtumrpc.rawCall('sendtoaddress', ["qMvyUVhNep4yZfJX19FAZabm5iBvB2BMAm", 5])
+    console.log(tx)
 }
 
-//rpc_test2()
+rpc_test_qtum().catch((err)=>console.log(err))
