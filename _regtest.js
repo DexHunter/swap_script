@@ -38,14 +38,17 @@ function getPubKey (address) {
 }
 
 
-function broadcast (signed_raw_tx) {
-    client.sendRawTransaction(signed_raw_tx).then((help)=>console.log(help))
+async function broadcast (signed_raw_tx) {
+    return await client.sendRawTransaction(signed_raw_tx)
 }
 
-async function newAdress () {
+async function newAddress () {
     return await client.getNewAddress();
 }
 
+async function getTx (txid) {
+    return await client.getTransaction(txid);
+}
 
 
 
@@ -55,7 +58,8 @@ module.exports = {
     faucet,
     getPubKey,
     broadcast,
-    newAdress,
+    newAddress,
+    getTx,
     //RANDOM_ADDR: random_addr()
 }
 

@@ -70,6 +70,8 @@ function main() {
 
     async function makeTx(){
 
+        done()
+
         // 3 hours ago, redeem in the past
         const lockTime = bip65.encode({ utc: utcNow() - (3600 * 3)  });
 
@@ -79,7 +81,8 @@ function main() {
         const redeemScript = htlcCheckSigOutput(victor, peggy, secretHash, lockTime);
         const { address } = bitcoin.payments.p2sh({ redeem: { output: redeemScript, network: regtest  }, network: regtest  });
 
-        rpcUtils.faucet (address, 100)
+        const tx1 = await client.sendToAddress(address, 50)
+        console.log('SEND TX ' + tx1)
 
         const txb = new bitcoin.TransactionBuilder(regtest)
         txb.setLockTime(lockTime)
@@ -87,11 +90,11 @@ function main() {
         unspent = await client.listUnspent(0, 9999999, [victor_addr])
 
         console.log(unspent)
-        console.log(unspent[0].txid)
-        console.log(unspent[0].vout)
 
-        txb.addInput(unspent[0].txId, unspent[0].vout)
-        txb.addOutput(rpcUtils.newAddress(), 10)
+        txb.addInput(unspent[0].txid, unspent[0].vout)
+
+        const newaddr = await client.getNewAddress()
+        txb.addOutput(newaddr, 40000)
 
 		const tx = txb.buildIncomplete()
 		const signatureHash = tx.hashForSignature(0, redeemScript, hashType)
@@ -106,10 +109,15 @@ function main() {
 		}).input
 		tx.setInputScript(0, redeemScriptSig)
 
-        rpcUtils.broadcast(tx.toHex())
+        const txid = await client.sendRawTransaction(tx.toHex())
+        console.log('TXID ' + txid)
+
+        console.log(rpcUtils.getTx(txid))
+
     }
 
-    makeTx().catch((err)=>console.log(err));
+    makeTx().catch((err)=> {console.log(err)});
+    //makeTx().catch((err)=> {console.log(err); done()});
 
 }
 
