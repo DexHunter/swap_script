@@ -12,18 +12,24 @@ const client = new Client({
 /*
  * generate returns txid
  */
-function generate (count) {
-    client.generate(count).then((help) => console.log(help));
+function mine (count) {
+    if (count > 0) {
+        client.generate(count)
+            .then((help) => console.log(help))
+            .catch((err) => {console.log(err); mine(count-1)});
+    }
 }
 
-function listuxto(params) {
+async function listutxo(params) {
 
-    params = params || undefined;
-    return client.listUnspent(params);
+    params = params || null;
+    return await client.listUnspent(params);
 }
 
 function faucet (address, value) {
-    client.sendToAddress(address, value).then((help) => console.log(help))
+    client.sendToAddress(address, value)
+        .then((help) => console.log(help))
+        .catch((err) => mine(1))
 }
 
 function getPubKey (address) {
@@ -31,21 +37,25 @@ function getPubKey (address) {
     return info['pubkey'];
 }
 
-function random_addr () {
-    return client.getNewAddress().then((help) => console.log(help))
-}
 
 function broadcast (signed_raw_tx) {
     client.sendRawTransaction(signed_raw_tx).then((help)=>console.log(help))
 }
 
+async function newAdress () {
+    return await client.getNewAddress();
+}
+
+
 
 
 module.exports = {
-    generate,
-    listuxto,
+    mine,
+    listutxo,
     faucet,
     getPubKey,
-    random_addr,
+    broadcast,
+    newAdress,
+    //RANDOM_ADDR: random_addr()
 }
 
