@@ -141,6 +141,19 @@ async function rpc_test(addrs) {
     const tx_raw = await client.decodeRawTransaction(tx2)
     console.log('>>>>>>DECODING RAW TRANSACTION>>>>>>>>')
     console.log(tx_raw)
+
+    const signed_tx = await client.signRawTransaction(tx2)
+    console.log('<<<<<<SIGNING RAW TRANSACTION<<<<<<<<')
+    console.log(signed_tx)
+
+    const utxos2 = await client.listUnspent(0,9999999)
+    console.log('>>>>>>>UTXOS>>>>>>>>>>>')
+
+    const privKey1 = await client.dumpPrivKey(utxos2[0].address)
+    const privKey2 = await client.dumpPrivKey(utxos2[1].address)
+    console.log('<<<<<<DUMPING PRIVATE KEYS<<<<<<<<')
+    console.log(privKey1)
+    console.log(privKey2)
 }
 
 rpc_test(['2N7zWpgzJXb5M7KjeybmhyUJWFk8HqEF1en']).catch((err)=>{console.log(err)})
