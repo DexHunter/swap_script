@@ -152,6 +152,7 @@ async function rpc_test(addrs) {
     const tx_raw = await client.decodeRawTransaction(tx2)
     console.log('>>>>>>DECODING RAW TRANSACTION>>>>>>>>')
     console.log(tx_raw)
+    console.log('>>>>>>SCRIPT TEMP>>>>>>>>')
     const script_temp = tx_raw.vout[0].scriptPubKey.asm
     console.log(script_temp)
 
