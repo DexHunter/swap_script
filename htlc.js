@@ -121,20 +121,29 @@ function main() {
 
 }
 
-main()
+//main()
 
-function rpc_test(addrs) {
-    client.listUnspent(0,9999999, addrs).then((utxos) =>
-        {
-        console.log(utxos);
-        console.log(typeof(utxos));
-        console.log(utxos.length);
-            for (id in utxos) {
-                console.log(utxos[id].txid);
-            }
-})}
+async function rpc_test(addrs) {
+    const tx1 = await client.sendToAddress(addrs[0], 5)
+    console.log(tx1)
+    const utxos = await client.listUnspent(0,9999999, addrs)
+    console.log('<<<<<<UXTOS<<<<<<<<')
+    console.log(utxos)
+    const utxo1_id = utxos[0].txid
+    const utxo1_vout = utxos[0].vout
+    const acc = await client.getNewAddress()
+    console.log('>>>>>>GETTING NEW ADDRESS>>>>>>>>')
+    console.log(acc)
+    console.log(typeof(acc))
+    const tx2 = await client.createRawTransaction([{'txid': utxo1_id, 'vout': utxo1_vout}], { "2MwdJpShMbxZe4FFJTzN2WbxRCsem15LVJD": 5}, 50)
+    console.log('<<<<<<CREATING RAW TRANSACTION<<<<<<<<')
 
-//rpc_test(['2N7zWpgzJXb5M7KjeybmhyUJWFk8HqEF1en'])
+    const tx_raw = await client.decodeRawTransaction(tx2)
+    console.log('>>>>>>DECODING RAW TRANSACTION>>>>>>>>')
+    console.log(tx_raw)
+}
+
+rpc_test(['2N7zWpgzJXb5M7KjeybmhyUJWFk8HqEF1en']).catch((err)=>{console.log(err)})
 
 async function rpc_test2() {
     const acc = await client.getNewAddress()
