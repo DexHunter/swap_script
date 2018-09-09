@@ -4,6 +4,9 @@ var regtest = bitcoin.networks.testnet;
 const rpcUtils = require('./_regtest')
 const bip65 = require('bip65')
 const Client = require('bitcoin-core');
+const {
+      QtumRPC
+} = require("qtumjs")
 
 const client = new Client({
     host: '47.52.22.90',
@@ -13,6 +16,7 @@ const client = new Client({
     password: 'btc'
 });
 
+const qtumrpc = new QtumRPC("http://qtum:test@47.52.22.90:3889");
 
 const victor = bitcoin.ECPair.fromWIF('cTSVVXPLSZcvFUSe4fdYnwnihnb2d86THDWCUqafVWwDYt4nyfdU', regtest) //import from private key
 const peggy = bitcoin.ECPair.fromWIF('cP2DhdJW3eRu9RGEnRFQXf8GcjbgGTvynbLUEg1Ae3JvCrMpZWBV', regtest) //import from private key
@@ -71,7 +75,6 @@ function main() {
     async function makeTx(){
 
         done()
-
         // 3 hours ago, redeem in the past
         const lockTime = bip65.encode({ utc: utcNow() - (3600 * 3)  });
 
@@ -123,6 +126,14 @@ function main() {
 
 //main()
 
+
+
+//function verify(txo) {
+//    const txoActual = txo.outs[txo.vout]
+//    if (txo.address) assert.strictEqual(txoActual.address, txo.address)
+//    if (txo.amount) assert.strictEqual(txoActual.amount, txo.amount)
+//}
+
 async function rpc_test(addrs) {
     const tx1 = await client.sendToAddress(addrs[0], 5)
     console.log(tx1)
@@ -141,6 +152,8 @@ async function rpc_test(addrs) {
     const tx_raw = await client.decodeRawTransaction(tx2)
     console.log('>>>>>>DECODING RAW TRANSACTION>>>>>>>>')
     console.log(tx_raw)
+    const script_temp = tx_raw.vout[0].scriptPubKey.asm
+    console.log(script_temp)
 
     const signed_tx = await client.signRawTransaction(tx2)
     console.log('<<<<<<SIGNING RAW TRANSACTION<<<<<<<<')
@@ -148,12 +161,25 @@ async function rpc_test(addrs) {
 
     const utxos2 = await client.listUnspent(0,9999999)
     console.log('>>>>>>>UTXOS>>>>>>>>>>>')
+    console.log(utxos2)
 
     const privKey1 = await client.dumpPrivKey(utxos2[0].address)
     const privKey2 = await client.dumpPrivKey(utxos2[1].address)
     console.log('<<<<<<DUMPING PRIVATE KEYS<<<<<<<<')
     console.log(privKey1)
     console.log(privKey2)
+
+    const newacc = await client.getNewAddress()
+    console.log(newacc)
+
+    console.log('>>>>>>>VALIDATING UTXO>>>>>>>>>>>')
+
+    //console.log(utxos2)
+    const utxo_test = utxos2[1]
+
+    console.log(utxo_test)
+    //verify(utxo_test)
+
 }
 
 rpc_test(['2N7zWpgzJXb5M7KjeybmhyUJWFk8HqEF1en']).catch((err)=>{console.log(err)})
